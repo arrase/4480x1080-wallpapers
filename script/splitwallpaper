@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# --- Validación de Argumentos ---
+if [ "$#" -ne 1 ]; then
+    echo "Uso: $0 <ruta_a_la_imagen>"
+    exit 1
+fi
+
+IMAGE_PATH="$1"
+
+# --- Verificación de Existencia de Archivo ---
+if [ ! -f "$IMAGE_PATH" ]; then
+    echo "Error: El archivo '$IMAGE_PATH' no existe o no es un archivo regular."
+    exit 1
+fi
+
+# --- Extracción del Nombre Base y Extensión ---
+FILENAME=$(basename -- "$IMAGE_PATH")
+EXTENSION="${FILENAME##*.}"
+FILENAME_NO_EXT="${FILENAME%.*}"
+DIRNAME=$(dirname -- "$IMAGE_PATH")
+
+# --- Rutas de Salida ---
+OUTPUT_LEFT="${DIRNAME}/${FILENAME_NO_EXT}_left.${EXTENSION}"
+OUTPUT_RIGHT="${DIRNAME}/${FILENAME_NO_EXT}_right.${EXTENSION}"
+
+echo "Procesando imagen: '$IMAGE_PATH'"
+
+# --- Operaciones de Recorte ---
+# Recorte Izquierdo: 1920x1080 píxeles, comenzando en (0,0)
+# Esto extrae la porción superior izquierda de la imagen con las dimensiones especificadas.
+if convert "$IMAGE_PATH" -crop 1920x1080+0+0 "$OUTPUT_LEFT"; then
+    echo "Recorte izquierdo completado exitosamente."
+else
+    echo "Error: Fallo en el recorte izquierdo de la imagen."
+    exit 1
+fi
+
+# Recorte Derecho: 2560x1080 píxeles, comenzando en (1920,0)
+# Esto extrae una porción de la imagen que comienza 1920 píxeles a la derecha desde el borde izquierdo y 0 píxeles desde el borde superior,
+# con las dimensiones de 2560x1080. Es crucial que la imagen original tenga el ancho suficiente para este desplazamiento y recorte.
+if convert "$IMAGE_PATH" -crop 2560x1080+1920+0 "$OUTPUT_RIGHT"; then
+    echo "Recorte derecho completado exitosamente."
+else
+    echo "Error: Fallo en el recorte derecho de la imagen."
+    exit 1
+fi
+
+echo "Procesamiento de imagen completado."
