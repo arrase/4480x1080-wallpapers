@@ -2,10 +2,6 @@
 
 This repository is dedicated to storing desktop wallpapers in the **4480x1080** format. This uncommon format results from combining two monitors with resolutions **1920x1080** and **2560x1080**, placed side by side.
 
-## Why 4480x1080?
-
-By joining a 1920x1080 screen and a 2560x1080 screen, the total desktop resolution becomes 4480x1080 pixels. This repository collects images adapted to this format to make the most of both monitors.
-
 ## Cropping Script (`splitwallpaper`)
 
 Some desktop environments do not allow using a single continuous image as wallpaper for both monitors. This is my case, which is why I use the included bash script `splitwallpaper` to split a 4480x1080 image into two files:
